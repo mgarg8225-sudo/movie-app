@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { getMovieRecommendations } from "./claude";
 import "./App.css";
 
 const API_KEY = "d28c9fff";
@@ -12,6 +13,10 @@ function App() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mood, setMood] = useState("");
+  const [recommendations, setRecommendations] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
 
   useEffect(() => {
     loadFavorites();
@@ -54,6 +59,20 @@ function App() {
     loadFavorites();
   };
 
+  const getRecommendations = async () => {
+  if (!mood.trim()) return;
+  setAiLoading(true);
+  setAiError("");
+  setRecommendations("");
+  try {
+    const result = await getMovieRecommendations(mood);
+    setRecommendations(result);
+  } catch (err) {
+    setAiError("Could not get recommendations. Please try again.");
+  }
+  setAiLoading(false);
+};
+
   return (
     <div className="app">
       <h1>🎬 Movie App</h1>
@@ -72,6 +91,28 @@ function App() {
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
 
+
+      <div className="section ai-section">
+  <h2>🤖 AI Movie Recommendations</h2>
+  <p className="ai-desc">Tell me your mood and I'll suggest movies!</p>
+  <div className="search-bar">
+    <input
+      type="text"
+      placeholder="e.g. I want something funny and light..."
+      value={mood}
+      onChange={(e) => setMood(e.target.value)}
+      onKeyDown={(e) => e.key === "Enter" && getRecommendations()}
+    />
+    <button onClick={getRecommendations}>Get Ideas</button>
+  </div>
+  {aiLoading && <p>Getting recommendations...</p>}
+  {aiError && <p className="error">{aiError}</p>}
+  {recommendations && (
+    <div className="recommendations">
+      <pre>{recommendations}</pre>
+    </div>
+  )}
+</div>
       <div className="section">
         <h2>Search Results</h2>
         <div className="movies-grid">

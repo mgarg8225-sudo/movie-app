@@ -125,3 +125,32 @@ h1 {
   text-align: center;
   margin-bottom: 16px;
 }
+
+.ai-section {
+  background: #1a1a2e;
+  border: 1px solid #e50914;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.ai-desc {
+  color: #aaa;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.recommendations {
+  background: #2a2a2a;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.recommendations pre {
+  white-space: pre-wrap;
+  font-family: sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #ffffff;
+}
